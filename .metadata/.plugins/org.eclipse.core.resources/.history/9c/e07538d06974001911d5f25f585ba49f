@@ -43,7 +43,8 @@ public class StartServer {
 				
 				Class.forName("com.mysql.jdbc.Driver");
 				
-				String url="jdbc:mysql://127.0.0.1:3306/yychat";
+				//String url="jdbc:mysql://127.0.0.1:3306/yychat";
+				String url="jdbc:mysql://127.0.0.1:3306/yychat?useUnicode=true&characterEncoding=UTF-8";
 				String dbuser="root";
 				String dbpass="";
 				Connection conn=DriverManager.getConnection(url,dbuser,dbpass);
@@ -65,6 +66,19 @@ public class StartServer {
 				mess.setReceiver("userName");
 				if(loginSuccess) {
 					mess.setMessageType(Message.message_LoginSuccess);
+					
+					String friend_Relation_Sql="select slaveuser from relation where majoruser=? and relationtype='1'";
+					ptmt=conn.prepareStatement(friend_Relation_Sql);
+					ptmt.setString(1, userName);
+					rs=ptmt.executeQuery();
+					String friendString="";
+					while(rs.next()) {
+						//rs.getString(1);
+						friendString=friendString+rs.getString("slaveuser")+" ";
+					}
+					mess.setContent(friendString);
+					System.out.println(userName+"µÄºÃÓÑ£º"+friendString);
+					
 				}else {
 					mess.setMessageType(Message.message_LoginFailure);
 				}

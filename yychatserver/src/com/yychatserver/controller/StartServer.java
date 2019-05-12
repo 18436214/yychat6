@@ -66,6 +66,19 @@ public class StartServer {
 				mess.setReceiver("userName");
 				if(loginSuccess) {
 					mess.setMessageType(Message.message_LoginSuccess);
+					
+					String friend_Relation_Sql="select slaveuser from relation where majoruser=? and relationtype='1'";
+					ptmt=conn.prepareStatement(friend_Relation_Sql);
+					ptmt.setString(1, userName);
+					rs=ptmt.executeQuery();
+					String friendString="";
+					while(rs.next()) {
+						//rs.getString(1);
+						friendString=friendString+rs.getString("slaveuser")+" ";
+					}
+					mess.setContent(friendString);
+					System.out.println(userName+"的relation数据表中好友："+friendString);
+					
 				}else {
 					mess.setMessageType(Message.message_LoginFailure);
 				}

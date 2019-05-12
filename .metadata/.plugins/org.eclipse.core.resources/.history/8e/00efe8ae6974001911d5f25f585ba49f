@@ -5,6 +5,11 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
@@ -36,17 +41,39 @@ public class StartServer {
 				System.out.println(userName);
 				System.out.println(passWord);
 				
+				Class.forName("com.mysql.jdbc.Driver");
+				
+				//String url="jdbc:mysql://127.0.0.1:3306/yychat";
+				String url="jdbc:mysql://127.0.0.1:3306/yychat?useUnicode=true&characterEncoding=UTF-8";
+				String dbuser="root";
+				String dbpass="";
+				Connection conn=DriverManager.getConnection(url,dbuser,dbpass);
+				
+				String user_Login_Sql="select * from user where username=? and password=?";
+				PreparedStatement ptmt=conn.prepareStatement(user_Login_Sql);
+				ptmt.setString(1, userName);
+				ptmt.setString(2, passWord);
+				
+				
+				ResultSet rs=ptmt.executeQuery();
+				
+				
+				boolean loginSuccess=rs.next();
+				System.out.println("loginSuccessÎª£º"+loginSuccess);
+				
 				mess=new Message();
 				mess.setSender("Server");
 				mess.setReceiver("userName");
-				if(passWord.equals("123456")) {
+				if(loginSuccess) {
 					mess.setMessageType(Message.message_LoginSuccess);
 				}else {
 					mess.setMessageType(Message.message_LoginFailure);
 				}
 				
 				sendMessage(s,mess);
-				if(passWord.equals("123456")) {
+				//if(passWord.equals("123456")) {
+				//if(passWord.equals("123456")) {
+				if(loginSuccess) {
 					mess.setMessageType(Message.message_NewOnlineFriend);
 					mess.setSender("Server");
 					mess.setContent(this.userName);
@@ -73,6 +100,9 @@ public class StartServer {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
