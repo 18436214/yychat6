@@ -60,32 +60,16 @@ public class FriendList  extends JFrame implements ActionListener,MouseListener{
 		myFriendPanel=new JPanel(new BorderLayout());
 		myFriendJButton=new JButton("ÎÒµÄºÃÓÑ");
 		myFriendPanel.add(myFriendJButton,"North");
-		
-		String[] friendName=friendString.split(" ");
-		int count=friendName.length;
-		
-		myFriendListJPanel=new JPanel(new GridLayout(count,1));
-		for(int i=0;i<count;i++) {
-			myFriendJLabel[i]=new JLabel(friendName[i]+"",new ImageIcon("images/YY1.gif"),JLabel.LEFT);
-			//myFriendJLabel[i].setEnabled(false);
+		myFriendListJPanel=new JPanel(new GridLayout(FRIENDCOUNT-1,1));
+		for(int i=1;i<FRIENDCOUNT;i++) {
+			myFriendJLabel[i]=new JLabel(i+"",new ImageIcon("images/YY1.gif"),JLabel.LEFT);
+			myFriendJLabel[i].setEnabled(false);
 			
 			//if(Integer.parseInt(userName)==i) myFriendJLabel[i].setEnabled(true);
 			
 			myFriendJLabel[i].addMouseListener(this);
 			myFriendListJPanel.add(myFriendJLabel[i]);
 		}
-		
-		/*
-		 * myFriendListJPanel=new JPanel(new GridLayout(FRIENDCOUNT-1,1)); for(int
-		 * i=1;i<FRIENDCOUNT;i++) { myFriendJLabel[i]=new JLabel(i+"",new
-		 * ImageIcon("images/YY1.gif"),JLabel.LEFT);
-		 * myFriendJLabel[i].setEnabled(false);
-		 * 
-		 * //if(Integer.parseInt(userName)==i) myFriendJLabel[i].setEnabled(true);
-		 * 
-		 * myFriendJLabel[i].addMouseListener(this);
-		 * myFriendListJPanel.add(myFriendJLabel[i]); }
-		 */
 		
 		
 		//myFriendJLabel[Integer.parseInt(userName)].setEnabled(true);

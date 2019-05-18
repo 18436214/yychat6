@@ -41,31 +41,44 @@ public class StartServer {
 				System.out.println(userName);
 				System.out.println(passWord);
 				
-				Class.forName("com.mysql.jdbc.Driver");
+				/*
+				 * Class.forName("com.mysql.jdbc.Driver");
+				 * 
+				 * //String url="jdbc:mysql://127.0.0.1:3306/yychat"; String url=
+				 * "jdbc:mysql://127.0.0.1:3306/yychat?useUnicode=true&characterEncoding=UTF-8";
+				 * String dbuser="root"; String dbpass=""; Connection
+				 * conn=DriverManager.getConnection(url,dbuser,dbpass);
+				 * 
+				 * String user_Login_Sql="select * from user where username=? and password=?";
+				 * PreparedStatement ptmt=conn.prepareStatement(user_Login_Sql);
+				 * ptmt.setString(1, userName); ptmt.setString(2, passWord);
+				 * 
+				 * 
+				 * ResultSet rs=ptmt.executeQuery();
+				 * 
+				 * 
+				 * boolean loginSuccess=rs.next();
+				 * System.out.println("loginSuccess为："+loginSuccess);
+				 */
 				
-				//String url="jdbc:mysql://127.0.0.1:3306/yychat";
-				String url="jdbc:mysql://127.0.0.1:3306/yychat?useUnicode=true&characterEncoding=UTF-8";
-				String dbuser="root";
-				String dbpass="";
-				Connection conn=DriverManager.getConnection(url,dbuser,dbpass);
-				
-				String user_Login_Sql="select * from user where username=? and password=?";
-				PreparedStatement ptmt=conn.prepareStatement(user_Login_Sql);
-				ptmt.setString(1, userName);
-				ptmt.setString(2, passWord);
-				
-				
-				ResultSet rs=ptmt.executeQuery();
-				
-				
-				boolean loginSuccess=rs.next();
-				System.out.println("loginSuccess为："+loginSuccess);
+				boolean loginSuccess=YychatDbUtil.loginValidate(userName, passWord);
 				
 				mess=new Message();
 				mess.setSender("Server");
 				mess.setReceiver("userName");
 				if(loginSuccess) {
 					mess.setMessageType(Message.message_LoginSuccess);
+					
+					/*
+					 * String
+					 * friend_Relation_Sql="select slaveuser from relation where majoruser=? and relationtype='1'"
+					 * ; ptmt=conn.prepareStatement(friend_Relation_Sql); ptmt.setString(1,
+					 * userName); rs=ptmt.executeQuery(); String friendString=""; while(rs.next()) {
+					 * //rs.getString(1); friendString=friendString+rs.getString("slaveuser")+" "; }
+					 */
+					mess.setContent(friendString);
+					System.out.println(userName+"的relation数据表中好友："+friendString);
+					
 				}else {
 					mess.setMessageType(Message.message_LoginFailure);
 				}

@@ -23,7 +23,34 @@ public class ClientConnect {
 			e.printStackTrace();
 		}
 	}
-	public boolean loginValidate(User user) {
+	
+	public Message loginValidateFromDB(User user) {
+		boolean loginSuccess=false;
+		
+		
+		ObjectOutputStream oos;
+		ObjectInputStream ois;
+		Message mess=null;
+		try {
+			oos=new ObjectOutputStream(s.getOutputStream());
+			oos.writeObject(user);
+			
+			
+			
+			ois=new ObjectInputStream(s.getInputStream());
+			mess=(Message)ois.readObject();
+			
+			if(mess.getMessageType().equals(Message.message_LoginSuccess)) {
+				System.out.println(user.getUserName()+"µÇÂ½³É¹¦");
+				hmSocket.put(user.getUserName(),s);
+				new ClientReceiverThread(s).start();
+			}
+		} catch (IOException | ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		return mess;
+	}
+	/*public boolean loginValidate(User user) {
 		boolean loginSuccess=false;
 		
 		
@@ -49,5 +76,5 @@ public class ClientConnect {
 			e.printStackTrace();
 		}
 		return loginSuccess;
-	}
+	}*/
 }
