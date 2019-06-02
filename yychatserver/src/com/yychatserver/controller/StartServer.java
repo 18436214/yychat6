@@ -41,6 +41,45 @@ public class StartServer {
 				System.out.println(userName);
 				System.out.println(passWord);
 				
+				if(user.getUserMessageType().equals("USER_REGISTER")) {
+					boolean seekUserResult=YychatDbUtil.seekUser(userName);
+					mess=new Message();
+					mess.setSender("Server");
+					mess.setReceiver(userName);
+					if(seekUserResult) {
+						mess.setMessageType(Message.message_RegisterFailure);
+					}else {
+						YychatDbUtil.addUser(userName,passWord);
+						mess.setMessageType(Message.message_RegisterSuccess);
+					}
+					sendMessage(s,mess);
+					s.close();
+				}
+				if(user.getUserMessageType().equals("USER_LOGIN")) {
+					boolean loginSuccess=YychatDbUtil.loginValidate(userName, passWord);
+					
+					mess=new Message();
+					mess.setSender("Server");
+					mess.setReceiver("userName");
+					if(loginSuccess) {
+						mess.setMessageType(Message.message_LoginSuccess);
+						
+						/*
+						 * String
+						 * friend_Relation_Sql="select slaveuser from relation where majoruser=? and relationtype='1'"
+						 * ; ptmt=conn.prepareStatement(friend_Relation_Sql); ptmt.setString(1,
+						 * userName); rs=ptmt.executeQuery(); String friendString=""; while(rs.next()) {
+						 * //rs.getString(1); friendString=friendString+rs.getString("slaveuser")+" "; }
+						 */
+						String friendString=YychatDbUtil.getFriendString(userName);
+						mess.setContent(friendString);
+						System.out.println(userName+"的relation数据表中好友："+friendString);
+						
+					}else {
+						mess.setMessageType(Message.message_LoginFailure);
+					}
+				
+				
 				/*
 				 * Class.forName("com.mysql.jdbc.Driver");
 				 * 
@@ -61,28 +100,7 @@ public class StartServer {
 				 * System.out.println("loginSuccess为："+loginSuccess);
 				 */
 				
-				boolean loginSuccess=YychatDbUtil.loginValidate(userName, passWord);
 				
-				mess=new Message();
-				mess.setSender("Server");
-				mess.setReceiver("userName");
-				if(loginSuccess) {
-					mess.setMessageType(Message.message_LoginSuccess);
-					
-					/*
-					 * String
-					 * friend_Relation_Sql="select slaveuser from relation where majoruser=? and relationtype='1'"
-					 * ; ptmt=conn.prepareStatement(friend_Relation_Sql); ptmt.setString(1,
-					 * userName); rs=ptmt.executeQuery(); String friendString=""; while(rs.next()) {
-					 * //rs.getString(1); friendString=friendString+rs.getString("slaveuser")+" "; }
-					 */
-					String friendString=YychatDbUtil.getFriendString(userName);
-					mess.setContent(friendString);
-					System.out.println(userName+"的relation数据表中好友："+friendString);
-					
-				}else {
-					mess.setMessageType(Message.message_LoginFailure);
-				}
 				
 				sendMessage(s,mess);
 				//if(passWord.equals("123456")) {
@@ -110,7 +128,8 @@ public class StartServer {
 				
 			}
 			
-		} catch (IOException|ClassNotFoundException e) {
+		} 
+		}catch (IOException|ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

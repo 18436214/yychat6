@@ -4,4 +4,6 @@
     <fullyQualifiedTypeName name="java.sql.Connection"/>
     <fullyQualifiedTypeName name="java.sql.PreparedStatement"/>
     <fullyQualifiedTypeName name="java.sql.ResultSet"/>
+    <fullyQualifiedTypeName name="java.sql.Timestamp"/>
+    <fullyQualifiedTypeName name="java.sql.Date"/>
 </qualifiedTypeNameHistroy>

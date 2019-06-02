@@ -1,6 +1,7 @@
 package com.yychatserver.controller;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -33,6 +34,7 @@ public class YychatDbUtil {
 		return conn;
 	}
 	
+	
 	public static boolean loginValidate(String userName,String passWord) {
 		boolean loginSuccess=false;
 		Connection conn=getConnection();
@@ -53,6 +55,48 @@ public class YychatDbUtil {
 		}
 		System.out.println("loginSuccessÎª£º"+loginSuccess);
 		return loginSuccess;
+	}
+	public static void addUser(String userName,String password) {
+		Connection conn=getConnection();
+		String user_Login_Sql="insert into user(userName,password,registertimestamp) values(?,?,?)";
+		PreparedStatement ptmt=null;
+		try {
+			ptmt = conn.prepareStatement(user_Login_Sql);
+			ptmt.setString(1, userName);
+			ptmt.setString(2, password);
+			java.util.Date date=new java.util.Date();
+			//Date date=new Date();
+			java.sql.Timestamp timestamp=new java.sql.Timestamp(date.getTime());
+			ptmt.setTimestamp(3, timestamp);
+			
+			int count=ptmt.executeUpdate();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally {
+			closeDB(conn,ptmt);
+		}
+	}
+	
+	public static boolean seekUser(String userName) {
+		boolean seekUserResult=false;
+		Connection conn=getConnection();
+		String user_Login_Sql="select * from user where username=?";
+		PreparedStatement ptmt=null;
+		ResultSet rs=null;
+		try {
+			ptmt = conn.prepareStatement(user_Login_Sql);
+			ptmt.setString(1, userName);
+			
+			rs=ptmt.executeQuery();
+			seekUserResult=rs.next();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally {
+			closeDB(conn,ptmt,rs);
+		}
+		return seekUserResult;
 	}
 	public static String getFriendString(String userName) {
 		Connection conn=getConnection();
@@ -77,6 +121,24 @@ public class YychatDbUtil {
 		}
 		
 		return friendString;
+	}
+	public static void closeDB(Connection conn,PreparedStatement ptmt) {
+		if(conn!=null) {
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		if(ptmt!=null) {
+			try {
+				ptmt.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 	public static void closeDB(Connection conn,PreparedStatement ptmt,ResultSet rs) {
 		if(conn!=null) {
