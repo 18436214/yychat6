@@ -56,6 +56,26 @@ public class YychatDbUtil {
 		System.out.println("loginSuccessÎª£º"+loginSuccess);
 		return loginSuccess;
 	}
+	public static int addRelation(String majorUser,String slaveUser,String relationType) {
+		int count=0;
+		Connection conn=getConnection();
+		String relation_Add_Sql="insert into relation(majoruser,slaveuser,relationtype) values(?,?,?)";
+		PreparedStatement ptmt=null;
+		try {
+			ptmt=conn.prepareStatement(relation_Add_Sql);
+			ptmt.setString(1,majorUser);
+			ptmt.setString(2,slaveUser);
+			ptmt.setString(3,relationType);
+			
+			count=ptmt.executeUpdate();
+			
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}finally {
+			closeDB(conn,ptmt);
+		}
+		return count;
+	}
 	public static void addUser(String userName,String password) {
 		Connection conn=getConnection();
 		String user_Login_Sql="insert into user(userName,password,registertimestamp) values(?,?,?)";
@@ -98,6 +118,28 @@ public class YychatDbUtil {
 		}
 		return seekUserResult;
 	}
+	public static boolean seekRelation(String majorUser,String slaveUser,String relationType) {
+		boolean seekRelationResult=false;
+		Connection conn=getConnection();
+		String seek_Relation_Sql="select * from relation where majoruser=? and slaveuser=? and relationtype=?";
+		PreparedStatement ptmt=null;
+		ResultSet rs=null;
+		try {
+			ptmt = conn.prepareStatement(seek_Relation_Sql);
+			ptmt.setString(1, majorUser);
+			ptmt.setString(2, slaveUser);
+			ptmt.setString(3, relationType);
+			rs=ptmt.executeQuery();
+			seekRelationResult=rs.next();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally {
+			closeDB(conn,ptmt,rs);
+		}
+		return seekRelationResult;
+	}
+	
 	public static String getFriendString(String userName) {
 		Connection conn=getConnection();
 		String friend_Relation_Sql="select slaveuser from relation where majoruser=? and relationtype='1'";

@@ -5,10 +5,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.HashMap;
 
 import javax.swing.*;
+
+import com.yychat.model.Message;
+import com.yychatclient.controller.ClientConnect;
 
 public class FriendList  extends JFrame implements ActionListener,MouseListener{
 	public static HashMap hmFriendChat1=new HashMap<String,FriendChat1>();
@@ -41,6 +46,8 @@ public class FriendList  extends JFrame implements ActionListener,MouseListener{
 	JButton blackListJButton2;
 	JPanel myBlacklistJPanel;
 	JScrollPane  myBlackListJScrollPane;
+	JButton addFriendJButton;
+	JPanel addFriendPanel;
 	
 	
 	
@@ -58,22 +65,34 @@ public class FriendList  extends JFrame implements ActionListener,MouseListener{
 	public FriendList(String userName,String friendString) {
 		this.userName=userName;//局部变量给成员变量赋值
 		myFriendPanel=new JPanel(new BorderLayout());
+		
+		addFriendJButton=new JButton("添加好友");
+		addFriendJButton.addActionListener(this);
+		
 		myFriendJButton=new JButton("我的好友");
-		myFriendPanel.add(myFriendJButton,"North");
+		addFriendPanel=new JPanel(new GridLayout(2,1));
+		addFriendPanel.add(addFriendJButton);
+		addFriendPanel.add(myFriendJButton);
+		myFriendPanel.add(addFriendPanel,"North");
 		
-		String[] friendName=friendString.split(" ");
-		int count=friendName.length;
+		myFriendListJPanel=new JPanel();
+		updateFriendIcon(friendString);
 		
-		myFriendListJPanel=new JPanel(new GridLayout(count,1));
-		for(int i=0;i<count;i++) {
-			myFriendJLabel[i]=new JLabel(friendName[i]+"",new ImageIcon("images/YY1.gif"),JLabel.LEFT);
-			//myFriendJLabel[i].setEnabled(false);
-			
-			//if(Integer.parseInt(userName)==i) myFriendJLabel[i].setEnabled(true);
-			
-			myFriendJLabel[i].addMouseListener(this);
-			myFriendListJPanel.add(myFriendJLabel[i]);
-		}
+		/*
+		 * String[] friendName=friendString.split(" "); int count=friendName.length;
+		 */
+		
+		/*
+		 * myFriendListJPanel=new JPanel(new GridLayout(count,1)); for(int
+		 * i=0;i<count;i++) { myFriendJLabel[i]=new JLabel(friendName[i]+"",new
+		 * ImageIcon("images/YY1.gif"),JLabel.LEFT);
+		 * //myFriendJLabel[i].setEnabled(false);
+		 * 
+		 * //if(Integer.parseInt(userName)==i) myFriendJLabel[i].setEnabled(true);
+		 * 
+		 * myFriendJLabel[i].addMouseListener(this);
+		 * myFriendListJPanel.add(myFriendJLabel[i]); }
+		 */
 		
 		/*
 		 * myFriendListJPanel=new JPanel(new GridLayout(FRIENDCOUNT-1,1)); for(int
@@ -161,7 +180,20 @@ public class FriendList  extends JFrame implements ActionListener,MouseListener{
 		this.setLocationRelativeTo(null);
 		this.setVisible(true);
 	}
-
+	public void updateFriendIcon(String friendString) {
+		myFriendListJPanel.removeAll();
+		String[] friendName=friendString.split(" ");
+		int count=friendName.length;
+		
+		myFriendListJPanel.setLayout(new GridLayout(count,1));
+		for(int i=0;i<count;i++) {
+			myFriendJLabel[i]=new JLabel(friendName[i]+"",new ImageIcon("images/YY1.gif"),JLabel.LEFT);
+			
+			myFriendJLabel[i].addMouseListener(this);
+			myFriendListJPanel.add(myFriendJLabel[i]);
+		}
+	}
+	
 	public static void main(String[] args) {
 		//FriendList friendList=new FriendList();
 		
@@ -180,6 +212,22 @@ public class FriendList  extends JFrame implements ActionListener,MouseListener{
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
+		if(arg0.getSource()==addFriendJButton) {
+			String addFriendName=JOptionPane.showInputDialog(null,"请输入好友的名字：","添加好友",JOptionPane.DEFAULT_OPTION);
+			Message mess=new Message();
+			mess.setSender(userName);
+			mess.setReceiver("Server");
+			mess.setContent(addFriendName);
+			mess.setMessageType(Message.message_AddFriend);
+			Socket s=(Socket)ClientConnect.hmSocket.get(userName);
+			ObjectOutputStream oos;
+			try {
+				oos=new ObjectOutputStream(s.getOutputStream());
+				oos.writeObject(mess);
+			}catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 		if(arg0.getSource()==myFriendJButton1||arg0.getSource()==myFriendJButton2){
 			cardLayout.show(this.getContentPane(),"1");
 		}
