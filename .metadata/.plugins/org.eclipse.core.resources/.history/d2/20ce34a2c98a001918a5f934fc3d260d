@@ -29,7 +29,7 @@ public class ServerReceiverThread extends Thread{
 				mess=(Message)ois.readObject();
 				sender=mess.getSender();
 				//System.out.println(mess.getSender()+"对"+mess.getReceiver()+"说："+mess.getContent());//这儿
-				System.out.println(mess.getMessageType());
+				
 				if(mess.getMessageType().equals(Message.message_AddFriend)) {
 					String addFriendName=mess.getContent();
 					System.out.println("需要添加新好友的名字："+addFriendName);

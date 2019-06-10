@@ -113,9 +113,9 @@ public class ClientLogin extends JFrame implements ActionListener{
 				hmFriendList.put(userName, friendList);
 				
 				Message mess1=new Message();
-				mess1.setSender(userName);
-				mess1.setReceiver("Server");
-				mess1.setMessageType(Message.message_RequestOnlineFriend);
+				mess.setSender(userName);
+				mess.setReceiver("Server");
+				mess.setMessageType(Message.message_RequestOnlineFriend);
 				
 				Socket s=(Socket)ClientConnect.hmSocket.get(userName);
 				ObjectOutputStream oos;
