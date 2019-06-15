@@ -3,7 +3,7 @@ package com.yychatclient.controller;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.Socket;
-import java.util.Date;
+import java.sql.Date;
 
 import javax.swing.JOptionPane;
 
@@ -46,7 +46,7 @@ public class ClientReceiverThread extends Thread{
 			    if(mess.getMessageType().equals(Message.message_Common)) {
 			    	//jta.append(showMessage+"\r\n"); 
 				    FriendChat1 friendChat1=(FriendChat1)FriendList.hmFriendChat1.get(mess.getReceiver()+"to"+mess.getSender());
-				    Date date=mess.getSendTime();
+				    Date date=mess.getsendTime();
 				    
 				    friendChat1.appendJta(date.toString()+"\r\n"+showMessage);
 			    }

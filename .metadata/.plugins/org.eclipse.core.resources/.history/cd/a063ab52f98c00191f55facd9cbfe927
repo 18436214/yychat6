@@ -3,7 +3,7 @@ package com.yychatclient.controller;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.Socket;
-import java.util.Date;
+import java.sql.Date;
 
 import javax.swing.JOptionPane;
 

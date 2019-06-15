@@ -1,11 +1,11 @@
 package com.yychatserver.controller;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Date;
 
 public class YychatDbUtil {
 	
@@ -36,7 +36,7 @@ public class YychatDbUtil {
 	
 	public static void addMessage(String sender,String receiver,String content) {
 		Connection conn=getConnection();
-		String message_Add_Sql="insert into message(sender,receiver,content,timestamp) values(?,?,?,?)";
+		String message_Add_Sql="insert into messge(sender,receiver,content,timestamp values(?,?,?,?)";
 		PreparedStatement ptmt=null;
 		try {
 			ptmt = conn.prepareStatement(message_Add_Sql);
